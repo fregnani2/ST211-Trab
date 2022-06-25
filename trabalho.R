@@ -13,7 +13,6 @@ train <- Boston[-test_ind, ]
 regfit.full=regsubsets(medv~.,train,nvmax=13)
 
 reg.summary = summary (regfit.full)
-names(reg.summary )
 
 
 par(mfrow =c(2,2))
@@ -34,20 +33,20 @@ points (bicmin,reg.summary$bic[bicmin],col = "red")
 coef(regfit.full,11)
 
 #B)
-regfit.fwd=regsubsets(medv~.,train,nvmax=13,method="forward")
+regfit.fwd = regsubsets(medv~.,train ,nvmax = 13,method =" forward ")
 regfit.fwd.summary = summary(regfit.fwd)
 
 regfit.bwd=regsubsets(medv~.,train,nvmax=13,method="backward")
-summary(regfit.bwd)
+bwd.summary = summary(regfit.bwd)
+#resultados iguais a A
+coef(regfit.bwd,11) 
+coef(regfit.fwd,11)
 
-rmax.fwd = which.max(regfit.fwd.summary$adjr2)
-plot(regfit.fwd.summary$adjr2 ,xlab =" Number of Variables ",ylab="R²fwd", type="l")
-points (rmax.fwd,regfit.fwd.summary$adjr2[rmax.fwd],col = "red")
-
-cpmin.fwd = which.min(regfit.fwd.summary$cp)
-plot(regfit.fwd.summary$cp ,xlab =" Number of Variables ",ylab="Cpfwd", type="l")
-points (cpmin.fwd,regfit.fwd.summary$cp[cpmin.fwd],col = "red")
-
-bicmin.fwd = which.min(regfit.fwd.summary$bic)
-plot(regfit.fwd.summary$bic ,xlab =" Number of Variables ",ylab="BICfwd", type="l")
-points (bicmin.fwd,regfit.fwd.summary$bic[bicmin.fwd],col = "red")
+#C)
+test.mat=model.matrix(medv~.,data=df[train ,])
+val.errors =rep(NA ,13)
+for(i in 1:13){
++coefi= coef(regfit.full,id=i)
++pred=test.mat[,names(coefi)] %*% coefi
++val.errors[i]= mean((train$medv-pred)^2)}
+                     
